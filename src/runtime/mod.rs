@@ -362,7 +362,7 @@ impl Runtime {
     /// Creates a new Runtime.
     pub fn new() -> Runtime {
         #[cfg(feature = "rand")]
-        use rand::FromEntropy;
+        use rand::SeedableRng;
 
         Runtime {
             module: Arc::new(Module::empty()),
@@ -371,7 +371,7 @@ impl Runtime {
             local_stack: vec![],
             current_stack: vec![],
             #[cfg(feature = "rand")]
-            rng: rand::rngs::StdRng::from_entropy(),
+            rng: rand::rngs::StdRng::from_rng(&mut rand::rng()),
             #[cfg(feature = "dynload")]
             module_lookup: file_lookup_module,
             arg_err_index: Cell::new(None),
