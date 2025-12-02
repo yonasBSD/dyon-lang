@@ -9,6 +9,7 @@ use std::io;
 #[cfg(feature = "file")]
 use std::io::Read;
 use std::sync::Arc;
+use futures_util::TryFutureExt;
 
 use crate::Variable;
 
@@ -143,14 +144,14 @@ pub fn load_meta_url(_meta: &str, _url: &str) -> Result<Vec<Variable>, String> {
 
 // Downloads a file from url.
 #[cfg(all(not(target_family = "wasm"), feature = "http"))]
-pub fn download_url_to_file(url: &str, file: &str) -> Result<String, String> {
+pub async fn download_url_to_file(url: &str, file: &str) -> Result<String, String> {
     use reqwest::{Client, StatusCode, Url};
     use std::io::copy;
 
     let url_address = Url::parse(url).map_err(|e| format!("Error parsing url:\n`{}`\n", e))?;
     let client = Client::new();
     let request = client.get(url_address);
-    let mut response = request.send().map_err(|e| {
+    let mut response = request.send().await.map_err(|e| {
         format!(
             "Error fetching file over http `{}`:\n{}\n",
             url,

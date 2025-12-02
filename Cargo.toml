@@ -21,6 +21,7 @@ lazy_static = "1.5.0"
 vecmath = "1.0.0"
 advancedresearch-tree_mem_sort = "0.2.0"
 tokio = {version = "1.48.0", features = ["full"], optional = true}
+futures-util = "0.3.31"
 
 [dev-dependencies]
 criterion = "0.8.0"
